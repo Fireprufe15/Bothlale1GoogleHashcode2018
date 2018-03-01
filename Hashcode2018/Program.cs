@@ -19,7 +19,29 @@ namespace Hashcode2018 {
             List<Ride> rides = new List<Ride>();
             List<Vehicle> vehiclesObjs = new List<Vehicle>();
 
-            using (TextReader tr = new StreamReader("in.in")) {
+            List<string> infiles = new List<string>
+            {
+                "in.in",
+                "in1.in",
+                "in2.in",
+                "in3.in",
+                "in4.in"
+            };
+            List<string> outfiles = new List<string>
+            {
+                "out.txt",
+                "out1.txt",
+                "out2.txt",
+                "out3.txt",
+                "out4.txt"
+            };
+            int counter = 0;
+            foreach (var name in infiles)
+            {
+                
+           
+
+            using (TextReader tr = new StreamReader(name)) {
                 var line1 = tr.ReadLine();
                 var values = line1.Split(' ');
                 rows = int.Parse(values[0]);
@@ -104,10 +126,13 @@ namespace Hashcode2018 {
 
 
 
-            using (TextWriter tw = new StreamWriter("out.txt")) {
+            using (TextWriter tw = new StreamWriter("C:\\outs\\" + outfiles[counter])) {
                 foreach (var item in vehiclesObjs) {
                     tw.WriteLine(item.ToString());
                 }
+            }
+
+                counter++;
             }
 
         }
