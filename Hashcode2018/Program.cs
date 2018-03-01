@@ -51,8 +51,32 @@ namespace Hashcode2018 {
 
             var vehicleindex = 0;
             // Do some magical algorithms
+
             foreach (var item in rides) {
+
+                //var test = vehiclesObjs.Where(x => x.occTill+x.TimeToGetThere(item.startRow, item.startColumn) < item.startTick);                
+                //if (test.Count() <= 0) {
+                //    continue;
+                //}
+                //test.OrderBy(x => x.TimeToGetThere(item.startRow, item.startColumn));
+                //vehicleindex = vehiclesObjs.IndexOf(test.First());
+                var viableVehicles = new List<Vehicle>();
+                foreach (var car in vehiclesObjs) {
+                    if (car.occTill + car.TimeToGetThere(item.startRow, item.startColumn) < item.startTick) {
+                        viableVehicles.Add(car);
+                    }
+                }
+                viableVehicles.OrderBy(x => x.TimeToGetThere(item.startRow, item.startColumn)).ToList();
+                if (viableVehicles.Count == 0) {
+                    continue;
+                }
+                vehicleindex = vehiclesObjs.IndexOf(viableVehicles[0]);
+                var vehc = vehiclesObjs[vehicleindex];
                 vehiclesObjs[vehicleindex].scheduledRides.Add(item);
+                var timeTaken = vehiclesObjs[vehicleindex].TimeToGetThere(item.startRow, item.startColumn, true, item.finx, item.finy);
+                vehc.posX = item.finx;
+                vehc.posY = item.finy;
+                vehc.occTill = timeTaken;
                 vehicleindex++;
                 if (vehicleindex > vehicles - 1) {
                     vehicleindex = 0;
@@ -88,12 +112,21 @@ namespace Hashcode2018 {
         public class Vehicle {
 
             public List<Ride> scheduledRides { get; set; }
+            public int TimeToGetThere(int x, int y, bool things = false, int x2 = 0 , int y2 = 0) {
+                var time = (x - posX) + (y - posY);
+                if (things) {
+                    time += (x2 - x) + (y2 - y);
+                }
+                return time;
+            }
             public int posX { get; set; }
             public int posY { get; set; }
+            public int occTill { get; set; }
             public Vehicle() {
                 scheduledRides = new List<Ride>();
                 posX = 0;
                 posY = 0;
+                occTill = 0;
             }
             public override string ToString() {
                 var s = scheduledRides.Count().ToString() + " ";
