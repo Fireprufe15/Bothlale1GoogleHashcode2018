@@ -38,6 +38,7 @@ namespace Hashcode2018 {
             int counter = 0;
             foreach (var name in infiles)
             {
+                Console.WriteLine(name);
 
                 List<Ride> rides = new List<Ride>();
                 List<Vehicle> vehiclesObjs = new List<Vehicle>();
@@ -106,9 +107,11 @@ namespace Hashcode2018 {
             ////    }
             ////}
 
+            rides = rides.OrderBy(x => x.endTick).ToList();
+            rides = rides.OrderBy(x => x.TimeToGetThere()).ToList();
             rides = rides.OrderBy(x => x.startTick).ToList();
 
-            for (long i = 0; i < steps; i++) {
+                for (long i = 0; i < steps; i++) {
 
                 var tickVehicles = vehiclesObjs.Where(x => x.occTill < i).ToList();
                 rides = rides.Where(x => x.assigned == false).ToList();
@@ -150,6 +153,11 @@ namespace Hashcode2018 {
             public int endTick { get; set; }
 
             public bool assigned { get; set; }
+
+            public int TimeToGetThere() {
+                var time = (Math.Abs(startRow - finx)) + (Math.Abs(startColumn - finy));                
+                return time;
+            }
             public Ride() {
                 assigned = false;
             }
@@ -159,9 +167,9 @@ namespace Hashcode2018 {
 
             public List<Ride> scheduledRides { get; set; }
             public int TimeToGetThere(int x, int y, bool things = false, int x2 = 0 , int y2 = 0) {
-                var time = (x - posX) + (y - posY);
+                var time = (Math.Abs(x - posX)) + (Math.Abs(y - posY));
                 if (things) {
-                    time += (x2 - x) + (y2 - y);
+                    time += (Math.Abs(x2 - x)) + (Math.Abs(y2 - y));
                 }
                 return time;
             }
