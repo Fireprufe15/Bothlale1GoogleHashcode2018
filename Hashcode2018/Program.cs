@@ -16,8 +16,8 @@ namespace Hashcode2018 {
             var numRides = 0;
             var onTimeBonus = 0;
             long steps = 0;
-            List<Ride> rides = new List<Ride>();
-            List<Vehicle> vehiclesObjs = new List<Vehicle>();
+            //List<Ride> rides = new List<Ride>();
+            //List<Vehicle> vehiclesObjs = new List<Vehicle>();
 
             List<string> infiles = new List<string>
             {
@@ -38,10 +38,11 @@ namespace Hashcode2018 {
             int counter = 0;
             foreach (var name in infiles)
             {
-                
-           
 
-            using (TextReader tr = new StreamReader(name)) {
+                List<Ride> rides = new List<Ride>();
+                List<Vehicle> vehiclesObjs = new List<Vehicle>();
+
+                using (TextReader tr = new StreamReader(name)) {
                 var line1 = tr.ReadLine();
                 var values = line1.Split(' ');
                 rows = int.Parse(values[0]);
@@ -126,7 +127,7 @@ namespace Hashcode2018 {
 
 
 
-            using (TextWriter tw = new StreamWriter("C:\\outs\\" + outfiles[counter])) {
+            using (TextWriter tw = new StreamWriter(outfiles[counter])) {
                 foreach (var item in vehiclesObjs) {
                     tw.WriteLine(item.ToString());
                 }
