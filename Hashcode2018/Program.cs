@@ -126,7 +126,7 @@ namespace Hashcode2018 {
 
 
 
-            using (TextWriter tw = new StreamWriter("C:\\outs\\" + outfiles[counter])) {
+            using (TextWriter tw = new StreamWriter(outfiles[counter])) {
                 foreach (var item in vehiclesObjs) {
                     tw.WriteLine(item.ToString());
                 }
