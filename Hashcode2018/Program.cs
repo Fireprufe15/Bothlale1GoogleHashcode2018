@@ -52,35 +52,54 @@ namespace Hashcode2018 {
             var vehicleindex = 0;
             // Do some magical algorithms
 
-            foreach (var item in rides) {
+            ////foreach (var item in rides) {
 
-                //var test = vehiclesObjs.Where(x => x.occTill+x.TimeToGetThere(item.startRow, item.startColumn) < item.startTick);                
-                //if (test.Count() <= 0) {
-                //    continue;
-                //}
-                //test.OrderBy(x => x.TimeToGetThere(item.startRow, item.startColumn));
-                //vehicleindex = vehiclesObjs.IndexOf(test.First());
-                var viableVehicles = new List<Vehicle>();
-                foreach (var car in vehiclesObjs) {
-                    if (car.occTill + car.TimeToGetThere(item.startRow, item.startColumn) < item.startTick) {
-                        viableVehicles.Add(car);
-                    }
+            ////    var test = vehiclesObjs.Where(x => x.occTill + x.TimeToGetThere(item.startRow, item.startColumn) < item.startTick);
+            ////    if (test.Count() <= 0) {
+            ////        continue;
+            ////    }
+            ////    test.OrderBy(x => x.TimeToGetThere(item.startRow, item.startColumn));
+            ////    vehicleindex = vehiclesObjs.IndexOf(test.First());
+            ////    var viableVehicles = new List<Vehicle>();
+            ////    foreach (var car in vehiclesObjs) {
+            ////        if (car.occTill + car.TimeToGetThere(item.startRow, item.startColumn) < item.startTick) {
+            ////            viableVehicles.Add(car);
+            ////        }
+            ////    }
+            ////    viableVehicles = viableVehicles.OrderBy(x => x.TimeToGetThere(item.startRow, item.startColumn)).ToList();
+            ////    if (viableVehicles.Count == 0) {
+            ////        continue;
+            ////    }
+            ////    vehicleindex = vehiclesObjs.IndexOf(viableVehicles[0]);
+            ////    var vehc = vehiclesObjs[vehicleindex];
+            ////    vehiclesObjs[vehicleindex].scheduledRides.Add(item);
+            ////    var timeTaken = vehiclesObjs[vehicleindex].TimeToGetThere(item.startRow, item.startColumn, true, item.finx, item.finy);
+            ////    vehc.posX = item.finx;
+            ////    vehc.posY = item.finy;
+            ////    vehc.occTill += timeTaken;
+            ////    vehicleindex++;
+            ////    if (vehicleindex > vehicles - 1) {
+            ////        vehicleindex = 0;
+            ////    }
+            ////}
+
+            rides = rides.OrderBy(x => x.startTick).ToList();
+
+            for (long i = 0; i < steps; i++) {
+
+                var tickVehicles = vehiclesObjs.Where(x => x.occTill < i).ToList();
+                rides = rides.Where(x => x.assigned == false).ToList();
+                foreach (var item in tickVehicles) {
+                    var vehicleRide = rides.OrderBy(x => item.TimeToGetThere(x.startRow, x.startColumn)).FirstOrDefault();
+                    if (vehicleRide == null) continue;
+                    item.scheduledRides.Add(vehicleRide);
+                    vehicleRide.assigned = true;
+                    item.posX = vehicleRide.finx;
+                    item.posY = vehicleRide.finy;
+                    item.occTill += item.TimeToGetThere(vehicleRide.startRow, vehicleRide.startColumn, true, vehicleRide.finx, vehicleRide.finy);
+                    rides = rides.Where(x => x.assigned == false).ToList();
                 }
-                viableVehicles.OrderBy(x => x.TimeToGetThere(item.startRow, item.startColumn)).ToList();
-                if (viableVehicles.Count == 0) {
-                    continue;
-                }
-                vehicleindex = vehiclesObjs.IndexOf(viableVehicles[0]);
-                var vehc = vehiclesObjs[vehicleindex];
-                vehiclesObjs[vehicleindex].scheduledRides.Add(item);
-                var timeTaken = vehiclesObjs[vehicleindex].TimeToGetThere(item.startRow, item.startColumn, true, item.finx, item.finy);
-                vehc.posX = item.finx;
-                vehc.posY = item.finy;
-                vehc.occTill = timeTaken;
-                vehicleindex++;
-                if (vehicleindex > vehicles - 1) {
-                    vehicleindex = 0;
-                }
+
             }
 
 
@@ -104,8 +123,9 @@ namespace Hashcode2018 {
             public int startTick { get; set; }
             public int endTick { get; set; }
 
+            public bool assigned { get; set; }
             public Ride() {
-
+                assigned = false;
             }
         }
 
@@ -122,10 +142,12 @@ namespace Hashcode2018 {
             public int posX { get; set; }
             public int posY { get; set; }
             public int occTill { get; set; }
+            public bool busy { get; set; }
             public Vehicle() {
                 scheduledRides = new List<Ride>();
                 posX = 0;
                 posY = 0;
+                busy = false;
                 occTill = 0;
             }
             public override string ToString() {
